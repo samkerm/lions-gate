@@ -36,6 +36,11 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# generated native folders
-/ios
-/android
+# Native — ios/ and android/ are tracked (widgets, signing, etc.). Ignore heavy/generated bits:
+ios/Pods/
+ios/build/
+android/build/
+android/.gradle/
+android/app/build/
+**/xcuserdata/
+*.xcuserstate
