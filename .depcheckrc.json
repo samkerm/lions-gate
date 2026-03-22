@@ -1,0 +1,12 @@
+{
+  "ignoreMatches": [
+    "@types/*",
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "eslint",
+    "globals",
+    "lint-staged",
+    "prettier",
+    "typescript-eslint"
+  ]
+}

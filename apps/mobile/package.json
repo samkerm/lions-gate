@@ -1,0 +1,51 @@
+{
+  "name": "mobile",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "start:clear": "expo start -c",
+    "ios": "expo run:ios",
+    "android": "expo run:android",
+    "ios:start": "expo start --ios",
+    "android:start": "expo start --android",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "coverage": "jest --coverage",
+    "metro:kill": "bash ../../scripts/kill-metro.sh",
+    "kill-metro": "bash ../../scripts/kill-metro.sh"
+  },
+  "dependencies": {
+    "@lions-gate/core": "*",
+    "@lions-gate/ui": "*",
+    "@tamagui/babel-plugin": "^1.121.3",
+    "@tamagui/config": "^1.121.3",
+    "expo": "~52.0.0",
+    "expo-constants": "~17.0.0",
+    "expo-dev-client": "~5.0.0",
+    "expo-file-system": "~18.0.0",
+    "expo-linking": "~7.0.0",
+    "expo-location": "~18.0.0",
+    "expo-router": "~4.0.0",
+    "expo-status-bar": "~2.0.0",
+    "react": "18.3.1",
+    "react-native": "0.76.9",
+    "react-native-gesture-handler": "~2.20.0",
+    "react-native-reanimated": "~3.16.0",
+    "react-native-safe-area-context": "4.12.0",
+    "react-native-screens": "~4.4.0",
+    "tamagui": "^1.121.3"
+  },
+  "devDependencies": {
+    "react-dom": "18.3.1",
+    "@testing-library/react-native": "^12.9.0",
+    "@types/jest": "^29.5.14",
+    "@types/react": "~18.3.12",
+    "jest": "^29.7.0",
+    "jest-expo": "~52.0.0",
+    "typescript": "^5.7.2"
+  }
+}

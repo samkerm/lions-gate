@@ -1,0 +1,45 @@
+{
+  "name": "lions-gate",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "lint": "yarn workspace @lions-gate/core run lint && yarn workspace @lions-gate/ui run lint && yarn workspace mobile run lint",
+    "typecheck": "yarn workspace @lions-gate/core run typecheck && yarn workspace @lions-gate/ui run typecheck && yarn workspace mobile run typecheck",
+    "test": "yarn workspace @lions-gate/core run test && yarn workspace mobile run test && yarn workspace @lions-gate/ui run test",
+    "test:watch": "yarn workspace @lions-gate/core run test:watch",
+    "coverage": "yarn workspace @lions-gate/core run coverage && yarn workspace mobile run coverage",
+    "knip": "knip",
+    "ts-prune": "ts-prune -p packages/core/tsconfig.json",
+    "depcheck": "depcheck --ignores=@typescript-eslint/eslint-plugin,@typescript-eslint/parser,lint-staged,prettier,eslint,globals,typescript-eslint,@types/node",
+    "doctor": "cd apps/mobile && npx expo-doctor@latest",
+    "ios": "yarn workspace mobile run ios",
+    "android": "yarn workspace mobile run android",
+    "ios:start": "yarn workspace mobile run ios:start",
+    "android:start": "yarn workspace mobile run android:start",
+    "start": "yarn workspace mobile run start",
+    "start:clear": "yarn workspace mobile run start:clear",
+    "metro:kill": "bash scripts/kill-metro.sh",
+    "kill-metro": "bash scripts/kill-metro.sh",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "depcheck": "^1.4.7",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^15.14.0",
+    "husky": "^9.1.7",
+    "knip": "^5.41.0",
+    "lint-staged": "^15.4.0",
+    "prettier": "^3.4.2",
+    "ts-prune": "^0.10.3",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "ignore": ["apps/mobile/babel.config.js", "apps/mobile/metro.config.js"],
+  "ignoreDependencies": [
+    "@testing-library/react-native",
+    "@tamagui/babel-plugin",
+    "@tamagui/config",
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "expo-system-ui",
+    "expo-updates"
+  ],
+  "workspaces": {
+    ".": {
+      "entry": ["eslint.config.mjs"]
+    },
+    "packages/core": {
+      "entry": ["src/index.ts"],
+      "project": ["src/**/*.ts"]
+    },
+    "packages/ui": {
+      "entry": ["src/index.tsx"],
+      "project": ["src/**/*.tsx"]
+    },
+    "apps/mobile": {
+      "entry": ["app/**/*.tsx", "lib/**/*.ts", "tamagui.config.ts"],
+      "project": ["**/*.{ts,tsx}"]
+    }
+  }
+}

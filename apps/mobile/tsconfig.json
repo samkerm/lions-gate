@@ -1,0 +1,15 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "@lions-gate/core": ["../../packages/core/src/index.ts"],
+      "@lions-gate/core/*": ["../../packages/core/src/*"],
+      "@lions-gate/ui": ["../../packages/ui/src/index.tsx"],
+      "@lions-gate/ui/*": ["../../packages/ui/src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+}
