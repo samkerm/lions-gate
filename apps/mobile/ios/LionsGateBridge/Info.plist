@@ -52,9 +52,9 @@
       <true/>
     </dict>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <string>Always allow location so we can keep updating your bridge side and home screen widget while you drive, even when the app is in the background.</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your location</string>
+    <string>Always allow location so we can keep updating your bridge side and home screen widget while you drive, even when the app is in the background.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Location is used to choose the bridge perspective (Downtown vs North Shore).</string>
     <key>NSUserActivityTypes</key>
@@ -82,6 +82,10 @@
       <string>UIInterfaceOrientationPortraitUpsideDown</string>
       <string>UIInterfaceOrientationLandscapeLeft</string>
       <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>location</string>
     </array>
     <key>UIUserInterfaceStyle</key>
     <string>Automatic</string>

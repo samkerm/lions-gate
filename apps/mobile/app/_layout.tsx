@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import '../lib/location-background-task';
 
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';

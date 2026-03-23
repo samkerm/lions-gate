@@ -252,6 +252,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - EXTaskManager (12.0.6):
+    - ExpoModulesCore
+    - UMAppLoader
   - EXUpdatesInterface (1.0.0):
     - ExpoModulesCore
   - fast_float (6.1.4)
@@ -1944,6 +1947,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - Yoga
   - SocketRocket (0.7.1)
+  - UMAppLoader (5.0.1)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1965,6 +1969,7 @@ DEPENDENCIES:
   - ExpoLinking (from `../../../node_modules/expo-linking/ios`)
   - ExpoLocation (from `../../../node_modules/expo-location/ios`)
   - ExpoModulesCore (from `../../../node_modules/expo-modules-core`)
+  - EXTaskManager (from `../../../node_modules/expo-task-manager/ios`)
   - EXUpdatesInterface (from `../../../node_modules/expo-updates-interface/ios`)
   - fast_float (from `../../../node_modules/react-native/third-party-podspecs/fast_float.podspec`)
   - FBLazyVector (from `../../../node_modules/react-native/Libraries/FBLazyVector`)
@@ -2033,6 +2038,7 @@ DEPENDENCIES:
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../../../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
+  - UMAppLoader (from `../../../node_modules/unimodules-app-loader/ios`)
   - Yoga (from `../../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -2076,6 +2082,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/expo-location/ios"
   ExpoModulesCore:
     :path: "../../../node_modules/expo-modules-core"
+  EXTaskManager:
+    :path: "../../../node_modules/expo-task-manager/ios"
   EXUpdatesInterface:
     :path: "../../../node_modules/expo-updates-interface/ios"
   fast_float:
@@ -2209,6 +2217,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../../../node_modules/react-native-screens"
+  UMAppLoader:
+    :path: "../../../node_modules/unimodules-app-loader/ios"
   Yoga:
     :path: "../../../node_modules/react-native/ReactCommon/yoga"
 
@@ -2231,6 +2241,7 @@ SPEC CHECKSUMS:
   ExpoLinking: 8d12bee174ba0cdf31239706578e29e74a417402
   ExpoLocation: de58a60756fad907139ec422ccabb1ba734e080d
   ExpoModulesCore: 725faec070d590810d2ea5983d9f78f7cf6a38ec
+  EXTaskManager: 0dcaa9b4b058b435f4e5bff4919c863f4f46badc
   EXUpdatesInterface: 7c977640bdd8b85833c19e3959ba46145c5719db
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 7605ea4810e0e10ae4815292433c09bf4324ba45
@@ -2298,6 +2309,7 @@ SPEC CHECKSUMS:
   RNReanimated: 82bf292e3c590d2d9886039f83e1baf0c1b2cdc4
   RNScreens: 295d9c0aaeb7f680d03d7e9b476569a4959aae89
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  UMAppLoader: 7e7e0eaa7854ffd652c00a68c443afb28c3bedba
   Yoga: feb4910aba9742cfedc059e2b2902e22ffe9954a
 
 PODFILE CHECKSUM: 7e23b64342c4c3156c4e09a7ca154f04601b46fc

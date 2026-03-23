@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,6 +15,9 @@
 		53C7E8792F70AB1B0065EA74 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C7E8782F70AB1B0065EA74 /* WidgetKit.framework */; };
 		53C7E87B2F70AB1B0065EA74 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C7E87A2F70AB1B0065EA74 /* SwiftUI.framework */; };
 		53C7E88C2F70AB1C0065EA74 /* LionsGateBridgeWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53C7E8772F70AB1B0065EA74 /* LionsGateBridgeWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		53C7E8A42F70AB1B0065EA74 /* LionsGateBridgeWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C7E8A12F70AB1B0065EA74 /* LionsGateBridgeWidget.swift */; };
+		53C7E8A52F70AB1B0065EA74 /* LionsGateBridgeWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53C7E8A22F70AB1B0065EA74 /* LionsGateBridgeWidgetBundle.swift */; };
+		53C7E8A62F70AB1B0065EA74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 53C7E8A32F70AB1B0065EA74 /* Assets.xcassets */; };
 		96905EF65AED1B983A6B3ABC /* libPods-LionsGateBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-LionsGateBridge.a */; };
 		A1B230CA2F70AB1C0065EA07 /* WidgetSnapshotBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B230C82F70AB1C0065EA05 /* WidgetSnapshotBridge.swift */; };
 		A1B230CB2F70AB1C0065EA08 /* WidgetSnapshotBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B230C92F70AB1C0065EA06 /* WidgetSnapshotBridge.m */; };
@@ -59,6 +62,9 @@
 		53C7E8772F70AB1B0065EA74 /* LionsGateBridgeWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LionsGateBridgeWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		53C7E8782F70AB1B0065EA74 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		53C7E87A2F70AB1B0065EA74 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		53C7E8A12F70AB1B0065EA74 /* LionsGateBridgeWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LionsGateBridgeWidget.swift; sourceTree = "<group>"; };
+		53C7E8A22F70AB1B0065EA74 /* LionsGateBridgeWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LionsGateBridgeWidgetBundle.swift; sourceTree = "<group>"; };
+		53C7E8A32F70AB1B0065EA74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-LionsGateBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LionsGateBridge.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-LionsGateBridge.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LionsGateBridge.debug.xcconfig"; path = "Target Support Files/Pods-LionsGateBridge/Pods-LionsGateBridge.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-LionsGateBridge.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LionsGateBridge.release.xcconfig"; path = "Target Support Files/Pods-LionsGateBridge/Pods-LionsGateBridge.release.xcconfig"; sourceTree = "<group>"; };
@@ -71,20 +77,6 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-LionsGateBridge/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		53C7E8902F70AB1C0065EA74 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 53C7E8762F70AB1B0065EA74 /* LionsGateBridgeWidgetExtension */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		53C7E87C2F70AB1B0065EA74 /* LionsGateBridgeWidget */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (53C7E8902F70AB1C0065EA74 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LionsGateBridgeWidget; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
@@ -136,6 +128,16 @@
 				53C7E87A2F70AB1B0065EA74 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		53C7E87C2F70AB1B0065EA74 /* LionsGateBridgeWidget */ = {
+			isa = PBXGroup;
+			children = (
+				53C7E8A12F70AB1B0065EA74 /* LionsGateBridgeWidget.swift */,
+				53C7E8A22F70AB1B0065EA74 /* LionsGateBridgeWidgetBundle.swift */,
+				53C7E8A32F70AB1B0065EA74 /* Assets.xcassets */,
+			);
+			path = LionsGateBridgeWidget;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -243,12 +245,7 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				53C7E87C2F70AB1B0065EA74 /* LionsGateBridgeWidget */,
-			);
 			name = LionsGateBridgeWidgetExtension;
-			packageProductDependencies = (
-			);
 			productName = LionsGateBridgeWidgetExtension;
 			productReference = 53C7E8772F70AB1B0065EA74 /* LionsGateBridgeWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -305,6 +302,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53C7E8A62F70AB1B0065EA74 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +392,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-LionsGateBridge/Pods-LionsGateBridge-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/EXConstants.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/EXConstants/ExpoConstants_privacy.bundle",
+				"${PODS_CONFIGURATION_BUILD_DIR}/EXTaskManager/ExpoTaskManager_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/ExpoFileSystem/ExpoFileSystem_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RCT-Folly/RCT-Folly_privacy.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/React-Core/React-Core_privacy.bundle",
@@ -407,6 +406,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EXConstants.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoConstants_privacy.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoTaskManager_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ExpoFileSystem_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/RCT-Folly_privacy.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/React-Core_privacy.bundle",
@@ -441,6 +441,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				53C7E8A42F70AB1B0065EA74 /* LionsGateBridgeWidget.swift in Sources */,
+				53C7E8A52F70AB1B0065EA74 /* LionsGateBridgeWidgetBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,6 +561,7 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saumkh.lionsgatebridge.LionsGateBridgeWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -607,6 +610,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.saumkh.lionsgatebridge.LionsGateBridgeWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -675,7 +679,10 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -730,7 +737,10 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

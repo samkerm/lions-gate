@@ -21,10 +21,14 @@ import { Button, Spinner, Text, XStack, YStack } from '@lions-gate/ui';
 import * as Location from 'expo-location';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { AppState, Platform, ScrollView } from 'react-native';
+import { Alert, AppState, Linking, Platform, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { createFileSystemSnapshotCache } from '../lib/cache';
+import {
+  startBridgeBackgroundLocation,
+  stopBridgeBackgroundLocation,
+} from '../lib/location-background-task';
 import { pushWidgetPayload } from '../lib/widget-native';
 
 const SOURCE_URL = 'https://www.th.gov.bc.ca/ATIS/lgcws/private_status.htm#dms1';
@@ -33,6 +37,25 @@ const SOURCE_URL = 'https://www.th.gov.bc.ca/ATIS/lgcws/private_status.htm#dms1'
 const ATIS_POLL_INTERVAL_MS = 60 * 1000;
 
 const cache = createFileSystemSnapshotCache();
+
+function locationPermissionAlertBody(): string {
+  if (Platform.OS === 'ios') {
+    return [
+      'This app uses your location to guess which side of the bridge you’re on (north vs downtown) and to keep that perspective up to date.',
+      '',
+      'For the best experience, choose “Always” so we can keep receiving your location while you drive and while the app is in the background (including the home screen widget).',
+      '',
+      'Open Settings → Lions Gate Bridge → Location, then enable location and pick “Always”. “While Using the App” only updates while the app is open; “Allow Once” lasts for a single session.',
+    ].join('\n');
+  }
+  return [
+    'This app uses your location to guess which side of the bridge you’re on and to keep that perspective up to date.',
+    '',
+    'For continuous location (in the app and for the widget in the background), choose “Allow all the time”.',
+    '',
+    'Open Settings → Apps → Lions Gate Bridge → Permissions → Location, then select “Allow all the time”. “Allow only while using the app” limits updates to when the app is open.',
+  ].join('\n');
+}
 
 async function fetchHtml(): Promise<string> {
   const res = await fetch(SOURCE_URL);
@@ -145,6 +168,8 @@ export default function BridgeScreen() {
   const [locationPermission, setLocationPermission] = useState<Location.PermissionStatus | null>(
     null,
   );
+  const [backgroundLocationPermission, setBackgroundLocationPermission] =
+    useState<Location.PermissionStatus | null>(null);
   const [manualPerspective, setManualPerspective] = useState<BridgePerspective | null>(null);
   const [geoPerspective, setGeoPerspective] = useState<BridgePerspective>('unknown');
 
@@ -152,6 +177,7 @@ export default function BridgeScreen() {
   const manualRef = useRef(manualPerspective);
   const permissionRef = useRef<Location.PermissionStatus | null>(null);
   const snapshotRef = useRef<BridgeSnapshot | null>(null);
+  const prevLocationPermissionRef = useRef<Location.PermissionStatus | null>(null);
 
   const runRefresh = useCallback(async (options?: { silent?: boolean }) => {
     const silent = options?.silent ?? false;
@@ -184,27 +210,120 @@ export default function BridgeScreen() {
     }
   }, []);
 
+  /**
+   * `requestIfNeeded`: use `requestForegroundPermissionsAsync` on first focus (can prompt).
+   * Use `getForegroundPermissionsAsync` when returning from Settings / foreground — updates
+   * status without relying on `useFocusEffect` (same screen may stay “focused”).
+   */
+  const pullLocationPermissionAndGeo = useCallback(async (requestIfNeeded: boolean) => {
+    const fg = requestIfNeeded
+      ? await Location.requestForegroundPermissionsAsync()
+      : await Location.getForegroundPermissionsAsync();
+    permissionRef.current = fg.status;
+    setLocationPermission(fg.status);
+    const bg = await Location.getBackgroundPermissionsAsync();
+    setBackgroundLocationPermission(bg.status);
+    let geo: BridgePerspective = 'unknown';
+    if (fg.status === Location.PermissionStatus.GRANTED) {
+      try {
+        const pos = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+        geo = perspectiveFromCoordinates(pos.coords.latitude, pos.coords.longitude);
+      } catch {
+        geo = 'unknown';
+      }
+      setGeoPerspective(geo);
+    } else {
+      setGeoPerspective('unknown');
+    }
+    geoRef.current = geo;
+  }, []);
+
+  const requestBackgroundLocation = useCallback(async () => {
+    const run = async () => {
+      const r = await Location.requestBackgroundPermissionsAsync();
+      setBackgroundLocationPermission(r.status);
+    };
+    if (Platform.OS === 'android') {
+      Alert.alert(
+        'Background location',
+        'Next, Android opens Location settings. Choose “Allow all the time” so this app can keep receiving your location when it’s not on screen (recommended for lane perspective and the home screen widget).',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Continue', onPress: () => void run() },
+        ],
+      );
+      return;
+    }
+    await run();
+  }, []);
+
+  useEffect(() => {
+    if (locationPermission !== Location.PermissionStatus.GRANTED) {
+      void stopBridgeBackgroundLocation();
+      return;
+    }
+    if (backgroundLocationPermission === null) {
+      return;
+    }
+    if (backgroundLocationPermission !== Location.PermissionStatus.GRANTED) {
+      void stopBridgeBackgroundLocation();
+      return;
+    }
+    void (async () => {
+      try {
+        await startBridgeBackgroundLocation();
+      } catch {
+        // Misconfiguration, Expo Go, or OS denied background updates.
+      }
+    })();
+  }, [locationPermission, backgroundLocationPermission]);
+
   useFocusEffect(
     useCallback(() => {
       void (async () => {
-        const fg = await Location.requestForegroundPermissionsAsync();
-        permissionRef.current = fg.status;
-        setLocationPermission(fg.status);
-        let geo: BridgePerspective = 'unknown';
-        if (fg.status === Location.PermissionStatus.GRANTED) {
-          const pos = await Location.getCurrentPositionAsync({
-            accuracy: Location.Accuracy.Balanced,
-          });
-          geo = perspectiveFromCoordinates(pos.coords.latitude, pos.coords.longitude);
-          setGeoPerspective(geo);
-        } else {
-          setGeoPerspective('unknown');
-        }
-        geoRef.current = geo;
+        await pullLocationPermissionAndGeo(true);
         await runRefresh();
       })();
-    }, [runRefresh]),
+    }, [pullLocationPermissionAndGeo, runRefresh]),
   );
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'active') {
+        return;
+      }
+      void (async () => {
+        await pullLocationPermissionAndGeo(false);
+      })();
+    });
+    return () => sub.remove();
+  }, [pullLocationPermissionAndGeo]);
+
+  /** When permission flips to denied, prompt Settings (focus alone may not re-run). */
+  useEffect(() => {
+    if (locationPermission === null) {
+      return;
+    }
+    const prev = prevLocationPermissionRef.current;
+    prevLocationPermissionRef.current = locationPermission;
+    if (locationPermission !== Location.PermissionStatus.DENIED) {
+      return;
+    }
+    if (prev === Location.PermissionStatus.DENIED) {
+      return;
+    }
+    Alert.alert('Location is off', locationPermissionAlertBody(), [
+      { text: 'Not now', style: 'cancel' },
+      {
+        text: 'Open Settings',
+        onPress: () => {
+          void Linking.openSettings();
+        },
+      },
+    ]);
+  }, [locationPermission]);
 
   useFocusEffect(
     useCallback(() => {
@@ -268,6 +387,11 @@ export default function BridgeScreen() {
     });
     return () => sub.remove();
   }, []);
+
+  /** Manual side buttons: permission not granted, or granted but we could not infer NB vs downtown (GPS off, dead band, error). */
+  const showManualPerspectiveButtons =
+    locationPermission !== null &&
+    (locationPermission !== Location.PermissionStatus.GRANTED || geoPerspective === 'unknown');
 
   const laneStatsUnderIcons = useMemo(() => {
     if (!yourDirectionLanes) {
@@ -415,17 +539,99 @@ export default function BridgeScreen() {
                 ? 'checking…'
                 : locationPermission === Location.PermissionStatus.GRANTED
                   ? 'granted'
-                  : 'denied / blocked'}
+                  : locationPermission === Location.PermissionStatus.DENIED
+                    ? 'denied'
+                    : 'not granted'}
             </Text>
-            {locationPermission === Location.PermissionStatus.DENIED ? (
-              <XStack gap="$2" flexWrap="wrap">
-                <Button size="$3" onPress={() => setManualPerspective('downtown_vancouver')}>
-                  Downtown view
-                </Button>
-                <Button size="$3" onPress={() => setManualPerspective('north_west_vancouver')}>
-                  North / West view
-                </Button>
-              </XStack>
+            {locationPermission === Location.PermissionStatus.GRANTED ? (
+              <YStack gap="$1">
+                <Text color="#d4d4d8">
+                  Background (widget while away from app):{' '}
+                  {backgroundLocationPermission === null
+                    ? 'checking…'
+                    : backgroundLocationPermission === Location.PermissionStatus.GRANTED
+                      ? 'on'
+                      : backgroundLocationPermission === Location.PermissionStatus.DENIED
+                        ? 'denied'
+                        : 'off'}
+                </Text>
+                {backgroundLocationPermission != null &&
+                backgroundLocationPermission !== Location.PermissionStatus.GRANTED ? (
+                  <Text color="#a1a1aa" fontSize="$2">
+                    Choose “Always” (iOS) or “Allow all the time” (Android) so we keep getting your
+                    location in the background—not only for the widget, but so your side of the
+                    bridge stays current when you’re not in the app.
+                  </Text>
+                ) : null}
+                {backgroundLocationPermission != null &&
+                backgroundLocationPermission !== Location.PermissionStatus.GRANTED ? (
+                  <XStack gap="$2" flexWrap="wrap">
+                    <Button size="$3" onPress={() => void requestBackgroundLocation()}>
+                      Enable background location
+                    </Button>
+                    <Button
+                      size="$3"
+                      onPress={() => {
+                        void Linking.openSettings();
+                      }}
+                    >
+                      Open Settings
+                    </Button>
+                  </XStack>
+                ) : null}
+              </YStack>
+            ) : null}
+            {showManualPerspectiveButtons ? (
+              <YStack gap="$2">
+                <XStack gap="$2" flexWrap="wrap">
+                  <Button size="$3" onPress={() => setManualPerspective('downtown_vancouver')}>
+                    Downtown view
+                  </Button>
+                  <Button size="$3" onPress={() => setManualPerspective('north_west_vancouver')}>
+                    North / West view
+                  </Button>
+                </XStack>
+                {locationPermission === Location.PermissionStatus.DENIED ? (
+                  <XStack gap="$2" flexWrap="wrap">
+                    <Button
+                      size="$3"
+                      onPress={() => {
+                        void pullLocationPermissionAndGeo(true);
+                      }}
+                    >
+                      Ask for location again
+                    </Button>
+                    <Button
+                      size="$3"
+                      onPress={() => {
+                        void Linking.openSettings();
+                      }}
+                    >
+                      Open Settings
+                    </Button>
+                  </XStack>
+                ) : null}
+                {locationPermission === Location.PermissionStatus.UNDETERMINED ? (
+                  <XStack gap="$2" flexWrap="wrap">
+                    <Button
+                      size="$3"
+                      onPress={() => {
+                        void pullLocationPermissionAndGeo(true);
+                      }}
+                    >
+                      Try permission prompt again
+                    </Button>
+                    <Button
+                      size="$3"
+                      onPress={() => {
+                        void Linking.openSettings();
+                      }}
+                    >
+                      Open Settings
+                    </Button>
+                  </XStack>
+                ) : null}
+              </YStack>
             ) : null}
             <Text color="#d4d4d8">
               Active perspective:{' '}

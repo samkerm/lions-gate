@@ -12,12 +12,21 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": ["expo-router", ["expo-dev-client", {}]],
+    "plugins": [
+      "expo-router",
+      ["expo-dev-client", {}],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Location is used to choose the bridge perspective (Downtown vs North Shore).",
+          "locationAlwaysAndWhenInUsePermission": "Always allow location so we can keep updating your bridge side and home screen widget while you drive, even when the app is in the background.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true,
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Location is used to choose the bridge perspective (Downtown vs North Shore)."
-      },
       "bundleIdentifier": "com.saumkh.lionsgatebridge"
     },
     "android": {
@@ -27,7 +36,13 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION"
+      ],
       "package": "com.saumkh.lionsgatebridge"
     },
     "web": {
