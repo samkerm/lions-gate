@@ -1,13 +1,13 @@
 import type { FeatureFlags } from '../feature-flags';
 import { defaultFeatureFlags } from '../feature-flags';
 import type { BridgeSnapshot, ParseResult, ParseWarning } from '../models';
+import { computeDelayTrend } from './delay-trend';
 import {
   extractCurrentRequestedDmsBody,
   extractDelayFromDmsBody,
   extractLastUpdateLine,
   extractPreviousRequestedDmsBody,
 } from './extract';
-import { computeDelayTrend } from './delay-trend';
 import { stripHtmlToText } from './html-text';
 import { buildDirectionSummary, inferBridgeMode } from './inference';
 import { isSnapshotStaleByAge } from './staleness';
@@ -95,8 +95,9 @@ export function parseAtisHtml(
   const towardNorthShore = buildDirectionSummary('toward_north_shore', nbId, nbLanes);
   const bridgeMode = inferBridgeMode(towardDowntown, towardNorthShore);
 
-  const [sbApproachId, nbApproachId] =
-    flags.approachMergeVdsIds ?? defaultFeatureFlags.approachMergeVdsIds;
+  const approachMergePair =
+    flags.approachMergeVdsIds ?? defaultFeatureFlags.approachMergeVdsIds ?? (['103', '203'] as const);
+  const [sbApproachId, nbApproachId] = approachMergePair;
   const sbApproachSec = findSectionById(sections, sbApproachId);
   const nbApproachSec = findSectionById(sections, nbApproachId);
   const sbApproachLanes = sbApproachSec ? parseLanesInVdsSection(sbApproachSec.raw) : [];

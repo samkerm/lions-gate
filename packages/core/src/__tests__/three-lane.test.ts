@@ -50,7 +50,7 @@ describe('three-lane presentation', () => {
     if (!snapshot) {
       throw new Error('expected snapshot');
     }
-    const nb = snapshot!.towardNorthShore;
+    const nb = snapshot.towardNorthShore;
     const mid = pickMiddleLaneState(nb);
     expect(mid?.laneNumber).toBe(2);
   });

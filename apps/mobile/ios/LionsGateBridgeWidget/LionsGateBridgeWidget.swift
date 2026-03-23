@@ -114,6 +114,7 @@ enum WidgetPayloadStore {
     let delayBanner: String?
     let delayTrend: String?
     let previousDelayMinutes: Int?
+    let bridgeQueueHint: String?
   }
 
   static func load() -> Payload? {
@@ -141,6 +142,7 @@ struct BridgeEntry: TimelineEntry {
   let delayBanner: String
   let delayTrend: String
   let previousDelayMinutes: Int?
+  let bridgeQueueHint: String?
 }
 
 struct BridgeTimelineProvider: TimelineProvider {
@@ -159,7 +161,8 @@ struct BridgeTimelineProvider: TimelineProvider {
       delayMinutes: 5,
       delayBanner: "yellow",
       delayTrend: "down",
-      previousDelayMinutes: 10
+      previousDelayMinutes: 10,
+      bridgeQueueHint: nil
     )
   }
 
@@ -189,7 +192,8 @@ struct BridgeTimelineProvider: TimelineProvider {
       delayMinutes: p?.delayMinutes,
       delayBanner: p?.delayBanner ?? "none",
       delayTrend: p?.delayTrend ?? "unknown",
-      previousDelayMinutes: p?.previousDelayMinutes
+      previousDelayMinutes: p?.previousDelayMinutes,
+      bridgeQueueHint: p?.bridgeQueueHint
     )
   }
 }
@@ -266,6 +270,7 @@ private struct DelayBannerBlock: View {
   let delayBanner: String
   let delayTrend: String
   let previousDelayMinutes: Int?
+  let bridgeQueueHint: String?
 
   private var hasDelay: Bool {
     guard let m = delayMinutes else { return false }
@@ -286,6 +291,8 @@ private struct DelayBannerBlock: View {
   private let captionMuted = Color(white: 0.65)
   /// Muted headline when there is no delay (stable layout, low visual weight).
   private let noDelayPrimary = Color(white: 0.5)
+  /// Merge slower than bridge — possible queue forming (matches in-app hint).
+  private let queueBuildingPrimary = Color(white: 0.92)
   /// Softer than red: delay trending up (not “alarm” weight on a small widget).
   private let buildingUpLine = Color(white: 0.82)
   /// Keeps the lane row aligned when the trend line is absent.
@@ -305,6 +312,14 @@ private struct DelayBannerBlock: View {
         Text("\(m) MIN")
           .font(.system(size: 20, weight: .heavy, design: .rounded))
           .foregroundStyle(accent)
+          .minimumScaleFactor(0.9)
+          .lineLimit(1)
+          .lineSpacing(0)
+          .padding(.vertical, -4)
+      } else if bridgeQueueHint == "possible_queue" {
+        Text("Possible delay building up")
+          .font(.system(size: 20, weight: .heavy, design: .rounded))
+          .foregroundStyle(queueBuildingPrimary)
           .minimumScaleFactor(0.9)
           .lineLimit(1)
           .lineSpacing(0)
@@ -382,7 +397,8 @@ struct LionsGateBridgeWidgetEntryView: View {
         delayMinutes: entry.delayMinutes,
         delayBanner: entry.delayBanner,
         delayTrend: entry.delayTrend,
-        previousDelayMinutes: entry.previousDelayMinutes
+        previousDelayMinutes: entry.previousDelayMinutes,
+        bridgeQueueHint: entry.bridgeQueueHint
       )
 
       HStack(alignment: .top, spacing: 10) {
@@ -470,6 +486,7 @@ struct LionsGateBridgeWidget: Widget {
     delayMinutes: 5,
     delayBanner: "yellow",
     delayTrend: "down",
-    previousDelayMinutes: 10
+    previousDelayMinutes: 10,
+    bridgeQueueHint: nil
   )
 }

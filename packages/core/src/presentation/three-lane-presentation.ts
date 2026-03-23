@@ -1,6 +1,7 @@
-import type { BridgePerspective, BridgeSnapshot, LaneDirectionSummary, LaneHealth } from '../models';
 import { describePerspective } from '../location/perspective';
+import type { BridgePerspective, BridgeSnapshot, LaneDirectionSummary, LaneHealth } from '../models';
 import { delayBannerStyle } from '../parser/delay-trend';
+import { approachQueueHint } from './approach-queue-hint';
 import { greenHexForAveragedSpeed } from './green-speed';
 import { formatLaneSpeed } from './lane-metrics-format';
 
@@ -43,6 +44,11 @@ export interface WidgetBridgePayloadV1 {
   delayBanner: 'none' | 'yellow' | 'red';
   delayTrend: 'up' | 'down' | 'flat' | 'unknown';
   previousDelayMinutes: number | null;
+  /**
+   * When DMS shows no delay but merge (south of Marine) is much slower than the bridge deck,
+   * matches in-app “possible queue” hint — widget can show a soft headline instead of “No delays”.
+   */
+  bridgeQueueHint: 'none' | 'possible_queue';
 }
 
 function healthToColor(health: LaneHealth): ThreeLaneSlotColor {
@@ -168,6 +174,13 @@ export function buildThreeLanePayload(
   const middleClosed = three?.middle.color === 'red';
   const middleSpeedLine = l1 && !middleClosed ? formatLaneSpeed(l1) : null;
   const rightSpeedLine = l2 ? formatLaneSpeed(l2) : null;
+  const queueHint = approachQueueHint(snapshot, perspective);
+  const bridgeQueueHintField: 'none' | 'possible_queue' =
+    dm == null || dm <= 0
+      ? queueHint.kind === 'possible_queue'
+        ? 'possible_queue'
+        : 'none'
+      : 'none';
   return {
     schemaVersion: 4,
     lastUpdated: snapshot.refresh.lastUpdated,
@@ -183,5 +196,6 @@ export function buildThreeLanePayload(
     delayBanner: delayBannerStyle(dm),
     delayTrend: snapshot.delay?.delayTrend ?? 'unknown',
     previousDelayMinutes: prev,
+    bridgeQueueHint: bridgeQueueHintField,
   };
 }
