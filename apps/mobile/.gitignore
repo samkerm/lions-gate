@@ -36,6 +36,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Release / local build artifacts (never commit)
+*.ipa
+*.xcarchive
+
 # Native — ios/ and android/ are tracked (widgets, signing, etc.). Ignore heavy/generated bits:
 ios/Pods/
 ios/build/

@@ -29,7 +29,7 @@
       ]
     ],
     "ios": {
-      "supportsTablet": true,
+      "supportsTablet": false,
       "bundleIdentifier": "com.samkerm.lionsgatebridge"
     },
     "android": {
