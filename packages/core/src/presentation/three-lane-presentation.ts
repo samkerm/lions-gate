@@ -1,5 +1,10 @@
 import { describePerspective } from '../location/perspective';
-import type { BridgePerspective, BridgeSnapshot, LaneDirectionSummary, LaneHealth } from '../models';
+import type {
+  BridgePerspective,
+  BridgeSnapshot,
+  LaneDirectionSummary,
+  LaneHealth,
+} from '../models';
 import { delayBannerStyle } from '../parser/delay-trend';
 import { approachQueueHint } from './approach-queue-hint';
 import { greenHexForAveragedSpeed } from './green-speed';

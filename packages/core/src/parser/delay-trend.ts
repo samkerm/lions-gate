@@ -1,10 +1,7 @@
 import type { DelayTrend } from '../models';
 
 /** Compare sign delay to prior DMS cycle (e.g. 5 min now vs 10 min previously). */
-export function computeDelayTrend(
-  current: number | null,
-  previous: number | null,
-): DelayTrend {
+export function computeDelayTrend(current: number | null, previous: number | null): DelayTrend {
   if (current == null || previous == null) {
     return 'unknown';
   }

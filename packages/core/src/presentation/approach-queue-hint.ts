@@ -56,8 +56,8 @@ export function approachQueueHint(
     perspective === 'downtown_vancouver' ? snapshot.towardNorthShore : snapshot.towardDowntown;
   const approach: LaneDirectionSummary | null =
     perspective === 'downtown_vancouver'
-      ? snapshot.approachTowardNorthShore ?? null
-      : snapshot.approachTowardDowntown ?? null;
+      ? (snapshot.approachTowardNorthShore ?? null)
+      : (snapshot.approachTowardDowntown ?? null);
 
   if (!approach) {
     return { kind: 'none' };

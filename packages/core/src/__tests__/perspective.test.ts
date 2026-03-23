@@ -5,7 +5,7 @@ import { buildBridgePresentation } from '../presentation/lane-presentation';
 describe('perspective', () => {
   it('infers north shore vs downtown heuristically', () => {
     expect(perspectiveFromCoordinates(49.33, -123.14)).toBe('north_west_vancouver');
-    expect(perspectiveFromCoordinates(49.30, -123.14)).toBe('downtown_vancouver');
+    expect(perspectiveFromCoordinates(49.3, -123.14)).toBe('downtown_vancouver');
   });
 
   it('inverts presentation when perspective flips', () => {

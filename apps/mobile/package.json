@@ -11,6 +11,8 @@
     "ios:start": "expo start --ios",
     "android:start": "expo start --android",
     "lint": "eslint .",
+    "format": "cd ../.. && yarn format",
+    "format:check": "cd ../.. && yarn format:check",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",

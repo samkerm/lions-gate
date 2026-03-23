@@ -96,7 +96,9 @@ export function parseAtisHtml(
   const bridgeMode = inferBridgeMode(towardDowntown, towardNorthShore);
 
   const approachMergePair =
-    flags.approachMergeVdsIds ?? defaultFeatureFlags.approachMergeVdsIds ?? (['103', '203'] as const);
+    flags.approachMergeVdsIds ??
+    defaultFeatureFlags.approachMergeVdsIds ??
+    (['103', '203'] as const);
   const [sbApproachId, nbApproachId] = approachMergePair;
   const sbApproachSec = findSectionById(sections, sbApproachId);
   const nbApproachSec = findSectionById(sections, nbApproachId);

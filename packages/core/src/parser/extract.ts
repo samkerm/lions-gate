@@ -31,11 +31,7 @@ export function extractCurrentRequestedDmsBody(text: string): string | null {
 
 /** Block after "Previous Requested Message" until NTCIP / next major section. */
 export function extractPreviousRequestedDmsBody(text: string): string | null {
-  return sliceBetweenMarkers(
-    text,
-    /Previous\s+Requested\s+Message/i,
-    /NTCIP\s+DMS\s+Status/i,
-  );
+  return sliceBetweenMarkers(text, /Previous\s+Requested\s+Message/i, /NTCIP\s+DMS\s+Status/i);
 }
 
 export interface DelayExtraction {

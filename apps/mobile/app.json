@@ -12,13 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-dev-client",
-        {}
-      ]
-    ],
+    "plugins": ["expo-router", ["expo-dev-client", {}]],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {

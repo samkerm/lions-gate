@@ -48,7 +48,10 @@ function parseNonNegativeFloat(raw: string | undefined): number | null {
 }
 
 /** Speed and length from `Last Averaged Lane Data` (same line in ATIS). */
-function parseAveragedLaneData(chunk: string): { speedKmh: number | null; lengthDm: number | null } {
+function parseAveragedLaneData(chunk: string): {
+  speedKmh: number | null;
+  lengthDm: number | null;
+} {
   const m =
     /Last\s+Averaged\s+Lane\s+Data:\s*Speed\s*=\s*(-?\d+(?:\.\d+)?)\s*km\/h\s*,\s*Length\s*=\s*(-?\d+(?:\.\d+)?)\s*dm/i.exec(
       chunk,

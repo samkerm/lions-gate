@@ -62,13 +62,7 @@ function resolveEffectivePerspective(
   return 'unknown';
 }
 
-function LaneColumn({
-  circleBg,
-  glyph,
-}: {
-  circleBg: string;
-  glyph: 'x' | 'up';
-}) {
+function LaneColumn({ circleBg, glyph }: { circleBg: string; glyph: 'x' | 'up' }) {
   return (
     <YStack
       width={56}
@@ -102,7 +96,7 @@ function ThreeLaneStrip({
   const rightBg = rightGreenHex ?? DEFAULT_GREEN;
   const midBg =
     middle.color === 'green'
-      ? middle.greenHex ?? DEFAULT_GREEN
+      ? (middle.greenHex ?? DEFAULT_GREEN)
       : middle.color === 'red'
         ? '#b42318'
         : '#6b7280';
@@ -234,9 +228,7 @@ export default function BridgeScreen() {
     return 'unknown';
   }, [geoPerspective, locationPermission, manualPerspective]);
 
-  const presentation = snapshot
-    ? buildBridgePresentation(snapshot, effectivePerspective)
-    : null;
+  const presentation = snapshot ? buildBridgePresentation(snapshot, effectivePerspective) : null;
 
   const threeLane = snapshot ? buildThreeLanePresentation(snapshot, effectivePerspective) : null;
   const middleSlotColor = threeLane?.middle.color;
@@ -292,9 +284,7 @@ export default function BridgeScreen() {
         l1 && !hideMiddleLaneStats
           ? { speedLine: formatLaneSpeed(l1), percentLine: formatLaneOccupancy(l1) }
           : null,
-      lane2: l2
-        ? { speedLine: formatLaneSpeed(l2), percentLine: formatLaneOccupancy(l2) }
-        : null,
+      lane2: l2 ? { speedLine: formatLaneSpeed(l2), percentLine: formatLaneOccupancy(l2) } : null,
     };
   }, [yourDirectionLanes, middleSlotColor]);
 
@@ -324,10 +314,7 @@ export default function BridgeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#0a0a0a' }} edges={['top', 'left', 'right']}>
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: 32 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={{ paddingBottom: 32 }} keyboardShouldPersistTaps="handled">
         <YStack padding="$4" gap="$3" backgroundColor="#0a0a0a">
           <Text fontSize="$8" fontWeight="700" color="#fafafa">
             Lions Gate Bridge
@@ -355,8 +342,7 @@ export default function BridgeScreen() {
               >
                 {snapshot.delay.delayMinutes} MIN
               </Text>
-              {delayTrend === 'down' &&
-              snapshot.delay.previousDelayMinutes != null ? (
+              {delayTrend === 'down' && snapshot.delay.previousDelayMinutes != null ? (
                 <Text fontSize="$2" color="#86efac">
                   ↓ from {snapshot.delay.previousDelayMinutes} min (improving)
                 </Text>
@@ -406,12 +392,15 @@ export default function BridgeScreen() {
                 lane2UnderIcon={laneStatsUnderIcons.lane2}
               />
             ) : (
-              <Text color="#a1a1aa">Open the app with location (or pick a side below) to see lanes.</Text>
+              <Text color="#a1a1aa">
+                Open the app with location (or pick a side below) to see lanes.
+              </Text>
             )}
             {threeLane ? (
               <Text fontSize="$2" opacity={0.85} color="#d4d4d8">
-                Middle = lane 1 (reversible), right = lane 2 (default); numbers are for your direction
-                of travel. Icon color still uses the worse of L1 vs L2 ({threeLane.middleLaneLabel}).
+                Middle = lane 1 (reversible), right = lane 2 (default); numbers are for your
+                direction of travel. Icon color still uses the worse of L1 vs L2 (
+                {threeLane.middleLaneLabel}).
               </Text>
             ) : null}
           </YStack>
@@ -480,15 +469,16 @@ export default function BridgeScreen() {
               widget when the app runs).
             </Text>
             <Text color={snapshot?.refresh.isStale ? '#f87171' : '#4ade80'}>
-              {snapshot?.refresh.isStale ? `Stale: ${snapshot.refresh.staleReason ?? 'yes'}` : 'Fresh'}
+              {snapshot?.refresh.isStale
+                ? `Stale: ${snapshot.refresh.staleReason ?? 'yes'}`
+                : 'Fresh'}
             </Text>
             <Text color="#a1a1aa">Bridge mode: {snapshot?.bridgeMode ?? '—'}</Text>
             {snapshot ? (
               <Text color="#a1a1aa" fontSize="$2">
                 Lane health uses VDS {snapshot.towardDowntown.vdsId} (SB) and{' '}
-                {snapshot.towardNorthShore.vdsId} (NB) at the north end of the causeway
-                (ATIS-02). L1 = reversible middle, L2 = default. Other VDS blocks use their
-                own lane numbering.
+                {snapshot.towardNorthShore.vdsId} (NB) at the north end of the causeway (ATIS-02).
+                L1 = reversible middle, L2 = default. Other VDS blocks use their own lane numbering.
               </Text>
             ) : null}
           </YStack>

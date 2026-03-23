@@ -30,7 +30,5 @@ export function greenHexForAveragedSpeed(speedKmh: number | null): string {
   const r = lerpChannel(SLOW_RGB[0], FAST_RGB[0], t);
   const g = lerpChannel(SLOW_RGB[1], FAST_RGB[1], t);
   const b = lerpChannel(SLOW_RGB[2], FAST_RGB[2], t);
-  return `#${[r, g, b]
-    .map((c) => c.toString(16).padStart(2, '0'))
-    .join('')}`;
+  return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
 }

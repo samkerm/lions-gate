@@ -1,5 +1,8 @@
 pnpm-lock.yaml
+yarn.lock
+**/.DS_Store
 **/node_modules/**
 **/coverage/**
 **/.expo/**
 **/dist/**
+apps/mobile/ios/**

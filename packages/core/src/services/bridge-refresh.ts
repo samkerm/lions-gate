@@ -38,14 +38,19 @@ function emptySnapshot(now: Date, sourceUrl: string): BridgeSnapshot {
   };
 }
 
-function withMergedRefresh(base: BridgeSnapshot, patch: Partial<BridgeSnapshot['refresh']>): BridgeSnapshot {
+function withMergedRefresh(
+  base: BridgeSnapshot,
+  patch: Partial<BridgeSnapshot['refresh']>,
+): BridgeSnapshot {
   return {
     ...base,
     refresh: { ...base.refresh, ...patch },
   };
 }
 
-export async function refreshBridgeSnapshot(input: RefreshBridgeSnapshotInput): Promise<BridgeSnapshot> {
+export async function refreshBridgeSnapshot(
+  input: RefreshBridgeSnapshotInput,
+): Promise<BridgeSnapshot> {
   const flags = input.flags ?? defaultFeatureFlags;
   input.analytics.track({ name: 'bridge_refresh_started', properties: { source: 'client' } });
 

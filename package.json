@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "lint": "yarn workspace @lions-gate/core run lint && yarn workspace @lions-gate/ui run lint && yarn workspace mobile run lint",
+    "format": "prettier --write \"packages/**/*.{ts,tsx,js,mjs,cjs,json,md}\" \"apps/**/*.{ts,tsx,js,mjs,cjs,json,md}\" \"*.{json,md}\"",
+    "format:check": "prettier --check \"packages/**/*.{ts,tsx,js,mjs,cjs,json,md}\" \"apps/**/*.{ts,tsx,js,mjs,cjs,json,md}\" \"*.{json,md}\"",
     "typecheck": "yarn workspace @lions-gate/core run typecheck && yarn workspace @lions-gate/ui run typecheck && yarn workspace mobile run typecheck",
     "test": "yarn workspace @lions-gate/core run test && yarn workspace mobile run test && yarn workspace @lions-gate/ui run test",
     "test:watch": "yarn workspace @lions-gate/core run test:watch",

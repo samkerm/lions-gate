@@ -39,7 +39,20 @@ export function formatAtisLastUpdateForDisplay(raw: string | null): string {
   const hour = Number.parseInt(hh, 10);
   const h12 = hour % 12 === 0 ? 12 : hour % 12;
   const ampm = hour >= 12 ? 'PM' : 'AM';
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
   const mi = Number.parseInt(mo, 10) - 1;
   if (mi < 0 || mi > 11) {
     return raw.trim();
