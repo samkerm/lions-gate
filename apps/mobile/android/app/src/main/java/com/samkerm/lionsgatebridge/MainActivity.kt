@@ -1,4 +1,4 @@
-package com.saumkh.lionsgatebridge
+package com.samkerm.lionsgatebridge
 
 import android.os.Build
 import android.os.Bundle

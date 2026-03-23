@@ -18,7 +18,14 @@
     "test:watch": "jest --watch",
     "coverage": "jest --coverage",
     "metro:kill": "bash ../../scripts/kill-metro.sh",
-    "kill-metro": "bash ../../scripts/kill-metro.sh"
+    "kill-metro": "bash ../../scripts/kill-metro.sh",
+    "ios:pod": "bash ../../scripts/ios-pod-install.sh",
+    "ios:archive": "bash ../../scripts/ios-archive-release.sh",
+    "ios:archive:clean": "bash ../../scripts/ios-archive-release.sh --clean",
+    "ios:ipa": "bash ../../scripts/ios-archive-release.sh --export-ipa",
+    "ios:ipa:clean": "bash ../../scripts/ios-archive-release.sh --clean --export-ipa",
+    "ios:eas:local": "npx eas-cli build --platform ios --profile production --local",
+    "ios:eas:cloud": "npx eas-cli build --platform ios --profile production"
   },
   "dependencies": {
     "@lions-gate/core": "*",

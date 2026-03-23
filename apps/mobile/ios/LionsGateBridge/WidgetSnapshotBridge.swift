@@ -3,7 +3,7 @@ import WidgetKit
 
 @objc(WidgetSnapshotBridge)
 class WidgetSnapshotBridge: NSObject {
-  static let appGroupId = "group.com.saumkh.lionsgatebridge"
+  static let appGroupId = "group.com.samkerm.lionsgatebridge"
   static let fileName = "bridge-widget-payload.json"
 
   @objc

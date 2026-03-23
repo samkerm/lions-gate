@@ -30,7 +30,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="lions-gate"/>
-        <data android:scheme="com.saumkh.lionsgatebridge"/>
+        <data android:scheme="com.samkerm.lionsgatebridge"/>
         <data android:scheme="exp+lions-gate-bridge"/>
       </intent-filter>
     </activity>
