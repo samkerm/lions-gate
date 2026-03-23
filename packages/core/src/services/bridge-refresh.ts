@@ -22,8 +22,10 @@ function emptySnapshot(now: Date, sourceUrl: string): BridgeSnapshot {
     schemaVersion: 1,
     delay: null,
     bridgeMode: 'unknown',
-    towardDowntown: buildDirectionSummary('toward_downtown', '101', []),
-    towardNorthShore: buildDirectionSummary('toward_north_shore', '201', []),
+    towardDowntown: buildDirectionSummary('toward_downtown', '102', []),
+    towardNorthShore: buildDirectionSummary('toward_north_shore', '202', []),
+    approachTowardDowntown: null,
+    approachTowardNorthShore: null,
     parseWarnings: [{ code: 'no_data', message: 'No cached or remote data available.' }],
     refresh: {
       fetchedAt: now.toISOString(),

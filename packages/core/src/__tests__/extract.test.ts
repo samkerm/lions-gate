@@ -2,6 +2,7 @@ import {
   extractCurrentRequestedDmsBody,
   extractDelayFromDmsBody,
   extractLastUpdateLine,
+  extractPreviousRequestedDmsBody,
 } from '../parser/extract';
 
 describe('extract', () => {
@@ -29,5 +30,28 @@ describe('extract', () => {
     expect(extractDelayFromDmsBody('LIONS GATE DELAYS 25 MIN').delayMinutes).toBe(25);
     expect(extractDelayFromDmsBody('LIONS GATE DELAYS 2 HR').delayMinutes).toBe(120);
     expect(extractDelayFromDmsBody('NO NUMBERS HERE').delayMinutes).toBeNull();
+  });
+
+  it('prefers LIONS GATE DELAYS line when multiple numbers exist', () => {
+    expect(
+      extractDelayFromDmsBody(
+        'Phase 1 LIONS GATE DELAYS 5 MIN Current Requested Message at: 2026/03/22',
+      ).delayMinutes,
+    ).toBe(5);
+  });
+
+  it('extracts previous requested DMS body before NTCIP section', () => {
+    const text = `
+      Current Requested Message
+      LIONS GATE DELAYS 5 MIN
+      Previous Requested Message
+      at: 2026/03/22, 16:41:21
+      LIONS GATE DELAYS 10 MIN
+      NTCIP DMS Status Information
+    `;
+    const prev = extractPreviousRequestedDmsBody(text);
+    expect(prev).toContain('10 MIN');
+    expect(prev).toContain('Previous');
+    expect(prev).not.toContain('NTCIP');
   });
 });

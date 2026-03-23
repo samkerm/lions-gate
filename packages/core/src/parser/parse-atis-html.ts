@@ -1,13 +1,26 @@
 import type { FeatureFlags } from '../feature-flags';
 import { defaultFeatureFlags } from '../feature-flags';
 import type { BridgeSnapshot, ParseResult, ParseWarning } from '../models';
-import { extractCurrentRequestedDmsBody, extractDelayFromDmsBody, extractLastUpdateLine } from './extract';
+import {
+  extractCurrentRequestedDmsBody,
+  extractDelayFromDmsBody,
+  extractLastUpdateLine,
+  extractPreviousRequestedDmsBody,
+} from './extract';
+import { computeDelayTrend } from './delay-trend';
 import { stripHtmlToText } from './html-text';
 import { buildDirectionSummary, inferBridgeMode } from './inference';
 import { isSnapshotStaleByAge } from './staleness';
 import { parseLanesInVdsSection, splitVdsSections } from './vds';
 
 const SOURCE_URL = 'https://www.th.gov.bc.ca/ATIS/lgcws/private_status.htm#dms1';
+
+/*
+ * Page structure (see MOT map legend): DMS = sign text; ATC = intersection controller;
+ * VDS = per-lane detectors. “ERROR - INVALID SPEED LOOP” in *previous* lines while
+ * current status is OK means the sensor recovered — we classify current upstream/downstream
+ * only. Counterflow closure is the explicit WARNING text on the active loops.
+ */
 
 function findSectionById(sections: ReturnType<typeof splitVdsSections>, id: string) {
   return sections.find((s) => s.vdsId === id) ?? null;
@@ -31,9 +44,20 @@ export function parseAtisHtml(
   let delay = null as BridgeSnapshot['delay'];
   if (dmsBody) {
     const ex = extractDelayFromDmsBody(dmsBody);
+    const prevBody = extractPreviousRequestedDmsBody(text);
+    let previousDelayMinutes: number | null = null;
+    let previousMessageRaw: string | undefined;
+    if (prevBody) {
+      const prevEx = extractDelayFromDmsBody(prevBody);
+      previousDelayMinutes = prevEx.delayMinutes;
+      previousMessageRaw = prevEx.messageRaw;
+    }
     delay = {
       delayMinutes: ex.delayMinutes,
       messageRaw: ex.messageRaw,
+      previousDelayMinutes,
+      previousMessageRaw,
+      delayTrend: computeDelayTrend(ex.delayMinutes, previousDelayMinutes),
     };
   } else {
     warnings.push({
@@ -71,6 +95,19 @@ export function parseAtisHtml(
   const towardNorthShore = buildDirectionSummary('toward_north_shore', nbId, nbLanes);
   const bridgeMode = inferBridgeMode(towardDowntown, towardNorthShore);
 
+  const [sbApproachId, nbApproachId] =
+    flags.approachMergeVdsIds ?? defaultFeatureFlags.approachMergeVdsIds;
+  const sbApproachSec = findSectionById(sections, sbApproachId);
+  const nbApproachSec = findSectionById(sections, nbApproachId);
+  const sbApproachLanes = sbApproachSec ? parseLanesInVdsSection(sbApproachSec.raw) : [];
+  const nbApproachLanes = nbApproachSec ? parseLanesInVdsSection(nbApproachSec.raw) : [];
+  const approachTowardDowntown = sbApproachSec
+    ? buildDirectionSummary('toward_downtown', sbApproachId, sbApproachLanes)
+    : null;
+  const approachTowardNorthShore = nbApproachSec
+    ? buildDirectionSummary('toward_north_shore', nbApproachId, nbApproachLanes)
+    : null;
+
   const stale = isSnapshotStaleByAge(lastUpdateRaw, options.fetchedAt, flags.staleAfterMs);
 
   const snapshot: BridgeSnapshot = {
@@ -79,6 +116,8 @@ export function parseAtisHtml(
     bridgeMode,
     towardDowntown,
     towardNorthShore,
+    approachTowardDowntown,
+    approachTowardNorthShore,
     parseWarnings: [...warnings],
     refresh: {
       fetchedAt: options.fetchedAt.toISOString(),

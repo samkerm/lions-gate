@@ -28,8 +28,9 @@ function laneKind(health: LaneHealth): LanePresentationKind {
 }
 
 /**
- * Downtown perspective: emphasize travel toward downtown as “your” side when arriving from the north.
- * North Shore perspective: invert which direction is highlighted as “yours”.
+ * “Your” lanes follow *your* commute:
+ * - Downtown → traveling toward North Shore → NB lanes (towardNorthShore)
+ * - North / West Van → traveling toward Downtown → SB lanes (towardDowntown)
  */
 export function buildBridgePresentation(
   snapshot: BridgeSnapshot,
@@ -48,15 +49,15 @@ export function buildBridgePresentation(
 
   if (perspective === 'north_west_vancouver') {
     return {
-      yourDirection: northLanes,
-      otherDirection: downtownLanes,
+      yourDirection: downtownLanes,
+      otherDirection: northLanes,
       perspectiveLabel: 'North / West Vancouver',
     };
   }
   if (perspective === 'downtown_vancouver') {
     return {
-      yourDirection: downtownLanes,
-      otherDirection: northLanes,
+      yourDirection: northLanes,
+      otherDirection: downtownLanes,
       perspectiveLabel: 'Downtown Vancouver',
     };
   }

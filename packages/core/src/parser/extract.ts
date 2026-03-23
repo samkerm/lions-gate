@@ -29,6 +29,15 @@ export function extractCurrentRequestedDmsBody(text: string): string | null {
   );
 }
 
+/** Block after "Previous Requested Message" until NTCIP / next major section. */
+export function extractPreviousRequestedDmsBody(text: string): string | null {
+  return sliceBetweenMarkers(
+    text,
+    /Previous\s+Requested\s+Message/i,
+    /NTCIP\s+DMS\s+Status/i,
+  );
+}
+
 export interface DelayExtraction {
   delayMinutes: number | null;
   messageRaw: string;
@@ -41,9 +50,15 @@ export function extractDelayFromDmsBody(body: string): DelayExtraction {
     const n = Number.parseInt(hr[1], 10);
     return { delayMinutes: Number.isFinite(n) ? n * 60 : null, messageRaw: normalized };
   }
-  const min = /(\d+)\s*MIN\b/i.exec(normalized);
-  if (min) {
-    const n = Number.parseInt(min[1], 10);
+  const lions = /LIONS\s+GATE\s+DELAYS\s*(\d+)\s*MIN\b/i.exec(normalized);
+  if (lions) {
+    const n = Number.parseInt(lions[1], 10);
+    return { delayMinutes: Number.isFinite(n) ? n : null, messageRaw: normalized };
+  }
+  const minGlobal = [...normalized.matchAll(/(\d+)\s*MIN\b/gi)];
+  if (minGlobal.length > 0) {
+    const last = minGlobal[minGlobal.length - 1];
+    const n = Number.parseInt(last[1], 10);
     return { delayMinutes: Number.isFinite(n) ? n : null, messageRaw: normalized };
   }
   return { delayMinutes: null, messageRaw: normalized };

@@ -32,7 +32,7 @@ describe('refreshBridgeSnapshot', () => {
       cache,
       now: new Date('2026-03-21T18:35:00'),
       sourceUrl: 'https://example.test',
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
       analytics: noopAnalytics,
       crashlytics: noopCrashlytics,
     });
@@ -49,7 +49,7 @@ describe('refreshBridgeSnapshot', () => {
       cache,
       now: new Date('2026-03-21T18:35:00'),
       sourceUrl: 'https://example.test',
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
       analytics: noopAnalytics,
       crashlytics: noopCrashlytics,
     });
@@ -60,7 +60,7 @@ describe('refreshBridgeSnapshot', () => {
       cache,
       now: new Date('2026-03-21T18:40:00'),
       sourceUrl: 'https://example.test',
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
       analytics: noopAnalytics,
       crashlytics: noopCrashlytics,
     });

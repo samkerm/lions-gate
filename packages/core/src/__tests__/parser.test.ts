@@ -13,14 +13,20 @@ describe('parseAtisHtml', () => {
     const res = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
       sourceUrl: 'https://example.test',
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     expect(res.snapshot).not.toBeNull();
     expect(res.snapshot?.refresh.lastUpdated).toBe('2026/03/21, 18:34:21');
     expect(res.snapshot?.delay?.delayMinutes).toBe(90);
     expect(res.snapshot?.towardDowntown.lanes).toHaveLength(2);
     expect(res.snapshot?.towardDowntown.lanes[0]?.health).toBe('counterflow_closed');
+    expect(res.snapshot?.towardDowntown.lanes[0]?.speedKmh).toBeNull();
     expect(res.snapshot?.towardDowntown.lanes[1]?.health).toBe('open');
+    expect(res.snapshot?.towardDowntown.lanes[1]?.speedKmh).toBe(60);
+    expect(res.snapshot?.towardDowntown.lanes[1]?.lengthDm).toBe(35);
+    expect(res.snapshot?.towardDowntown.lanes[1]?.volumeUpstreamVph).toBe(720);
+    expect(res.snapshot?.towardDowntown.lanes[1]?.occupancyUpstreamPercent).toBe(4);
+    expect(res.snapshot?.towardNorthShore.lanes[1]?.speedKmh).toBe(70);
     expect(res.snapshot?.bridgeMode).toBe('counterflow_active');
   });
 
@@ -28,7 +34,7 @@ describe('parseAtisHtml', () => {
     const html = loadFixture('stale.html');
     const res = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     expect(res.snapshot?.refresh.isStale).toBe(true);
     expect(res.snapshot?.delay?.delayMinutes).toBe(25);
@@ -38,7 +44,7 @@ describe('parseAtisHtml', () => {
     const html = loadFixture('malformed.html');
     const res = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     expect(res.snapshot?.towardDowntown.lanes.length).toBeGreaterThan(0);
   });
@@ -47,7 +53,7 @@ describe('parseAtisHtml', () => {
     const html = loadFixture('no-delay.html');
     const res = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     expect(res.snapshot?.delay?.delayMinutes).toBeNull();
   });
@@ -56,7 +62,7 @@ describe('parseAtisHtml', () => {
     const html = loadFixture('error-heavy.html');
     const res = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     expect(res.snapshot?.delay?.delayMinutes).toBe(120);
     expect(res.snapshot?.towardDowntown.lanes[0]?.health).toBe('degraded');
@@ -67,7 +73,7 @@ describe('parseAtisHtml', () => {
     const html = loadFixture('counterflow-one-lane.html');
     const res = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     expect(res.snapshot?.bridgeMode).toBe('counterflow_active');
     expect(res.snapshot?.delay?.delayMinutes).toBe(10);

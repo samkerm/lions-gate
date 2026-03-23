@@ -14,14 +14,14 @@ describe('perspective', () => {
       Current Requested Message
       10 MIN
       Previous Requested Message
-      VDS ID: 101
+      VDS ID: 102
       Lane Number: 1
       Current Upstream Loop Status: OK
       Current Downstream Loop Status: OK
       Lane Number: 2
       Current Upstream Loop Status: OK
       Current Downstream Loop Status: OK
-      VDS ID: 201
+      VDS ID: 202
       Lane Number: 1
       Current Upstream Loop Status: OK
       Current Downstream Loop Status: OK
@@ -31,7 +31,7 @@ describe('perspective', () => {
     `;
     const snap = parseAtisHtml(html, {
       fetchedAt: new Date('2026-03-21T18:35:00'),
-      flags: { primarySouthCausewayVdsIds: ['101', '201'], staleAfterMs: 600_000 },
+      flags: { primarySouthCausewayVdsIds: ['102', '202'], staleAfterMs: 600_000 },
     });
     const snapshot = snap.snapshot;
     expect(snapshot).not.toBeNull();
@@ -40,7 +40,7 @@ describe('perspective', () => {
     }
     const downtown = buildBridgePresentation(snapshot, 'downtown_vancouver');
     const north = buildBridgePresentation(snapshot, 'north_west_vancouver');
-    expect(downtown.yourDirection[0]?.label.startsWith('SB')).toBe(true);
-    expect(north.yourDirection[0]?.label.startsWith('NB')).toBe(true);
+    expect(downtown.yourDirection[0]?.label.startsWith('NB')).toBe(true);
+    expect(north.yourDirection[0]?.label.startsWith('SB')).toBe(true);
   });
 });

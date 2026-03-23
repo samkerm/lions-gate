@@ -16,6 +16,9 @@
 		53C7E87B2F70AB1B0065EA74 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C7E87A2F70AB1B0065EA74 /* SwiftUI.framework */; };
 		53C7E88C2F70AB1C0065EA74 /* LionsGateBridgeWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53C7E8772F70AB1B0065EA74 /* LionsGateBridgeWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		96905EF65AED1B983A6B3ABC /* libPods-LionsGateBridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-LionsGateBridge.a */; };
+		A1B230CA2F70AB1C0065EA07 /* WidgetSnapshotBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B230C82F70AB1C0065EA05 /* WidgetSnapshotBridge.swift */; };
+		A1B230CB2F70AB1C0065EA08 /* WidgetSnapshotBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = A1B230C92F70AB1C0065EA06 /* WidgetSnapshotBridge.m */; };
+		A1B230CD2F70AB1C0065EA11 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53C7E8782F70AB1B0065EA74 /* WidgetKit.framework */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		D7E190D9D88345759DD33399 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA2E2C77E6F4431DAF02B80E /* noop-file.swift */; };
@@ -59,6 +62,8 @@
 		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-LionsGateBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LionsGateBridge.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C2E3173556A471DD304B334 /* Pods-LionsGateBridge.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LionsGateBridge.debug.xcconfig"; path = "Target Support Files/Pods-LionsGateBridge/Pods-LionsGateBridge.debug.xcconfig"; sourceTree = "<group>"; };
 		7A4D352CD337FB3A3BF06240 /* Pods-LionsGateBridge.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LionsGateBridge.release.xcconfig"; path = "Target Support Files/Pods-LionsGateBridge/Pods-LionsGateBridge.release.xcconfig"; sourceTree = "<group>"; };
+		A1B230C82F70AB1C0065EA05 /* WidgetSnapshotBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WidgetSnapshotBridge.swift; path = LionsGateBridge/WidgetSnapshotBridge.swift; sourceTree = "<group>"; };
+		A1B230C92F70AB1C0065EA06 /* WidgetSnapshotBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = WidgetSnapshotBridge.m; path = LionsGateBridge/WidgetSnapshotBridge.m; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = LionsGateBridge/SplashScreen.storyboard; sourceTree = "<group>"; };
 		AA2E2C77E6F4431DAF02B80E /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "LionsGateBridge/noop-file.swift"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
@@ -87,6 +92,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96905EF65AED1B983A6B3ABC /* libPods-LionsGateBridge.a in Frameworks */,
+				A1B230CD2F70AB1C0065EA11 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,6 +119,8 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				AA2E2C77E6F4431DAF02B80E /* noop-file.swift */,
+				A1B230C82F70AB1C0065EA05 /* WidgetSnapshotBridge.swift */,
+				A1B230C92F70AB1C0065EA06 /* WidgetSnapshotBridge.m */,
 				520A5EF6616A4476ACDAD46E /* LionsGateBridge-Bridging-Header.h */,
 				CD332E6B16715F0D1178BF88 /* PrivacyInfo.xcprivacy */,
 			);
@@ -424,6 +432,8 @@
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
 				D7E190D9D88345759DD33399 /* noop-file.swift in Sources */,
+				A1B230CA2F70AB1C0065EA07 /* WidgetSnapshotBridge.swift in Sources */,
+				A1B230CB2F70AB1C0065EA08 /* WidgetSnapshotBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,6 +470,7 @@
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = LionsGateBridge/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -492,6 +503,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5EL7YNNLPR;
 				INFOPLIST_FILE = LionsGateBridge/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -526,6 +538,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = LionsGateBridgeWidget/LionsGateBridgeWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -573,6 +586,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_ENTITLEMENTS = LionsGateBridgeWidget/LionsGateBridgeWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;

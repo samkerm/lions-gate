@@ -4,7 +4,7 @@
 
 - **Last Update**: line matching `Last Update:` from stripped page text.
 - **DMS delay**: text between `Current Requested Message` and `Previous Requested Message`, scanning for `NN MIN` or `N HR` tokens.
-- **VDS lanes (primary)**: sections `VDS ID: 101` (southbound / toward downtown) and `VDS ID: 201` (northbound / toward north shore) at the south causeway, configurable via `FeatureFlags.primarySouthCausewayVdsIds`.
+- **VDS lanes (primary)**: sections `VDS ID: 102` (southbound / toward downtown) and `VDS ID: 202` (northbound / toward north shore) at the **north end of the causeway (ATIS-02)**, configurable via `FeatureFlags.primarySouthCausewayVdsIds` (alternative pair: `101`/`201` at the south end).
 - **Per lane**: `Lane Number:` chunks with `Current Upstream Loop Status` and `Current Downstream Loop Status` lines.
 
 ## What is inferred
@@ -15,7 +15,7 @@
 
 ## Assumptions
 
-- Primary bridge deck signal remains in VDS `101` / `201`; if MOT renumbers sensors, update flags + fixtures.
+- Primary bridge deck signal defaults to VDS `102` / `202`; if MOT renumbers sensors, update flags + fixtures.
 - DMS delay appears as plain `MIN` / `HR` tokens inside the current requested message block.
 - HTML can change layout; parsing is text-first after lightweight tag stripping.
 
@@ -29,6 +29,6 @@
 ## Updating fixtures
 
 1. Save a fresh HTML sample from the live page (respect MOT terms of use / caching policies).
-2. Trim to the smallest excerpt that still exercises DMS + VDS `101`/`201`.
+2. Trim to the smallest excerpt that still exercises DMS + the configured primary VDS pair (default `102`/`202`).
 3. Add or adjust a file in `packages/core/src/fixtures/`.
 4. Update tests if field names or lane ordering changed.

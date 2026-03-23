@@ -19,12 +19,25 @@ export interface LaneState {
   upstreamStatusRaw: string;
   downstreamStatusRaw: string;
   health: LaneHealth;
+  /** From `Last Averaged Lane Data: Speed = … km/h`; null when missing or invalid (e.g. -1). */
+  speedKmh: number | null;
+  /** From `Last Averaged Lane Data: … Length = … dm`; null when invalid. */
+  lengthDm: number | null;
+  /** From `Last Upstream Loop Data: Volume = … VPH`. */
+  volumeUpstreamVph: number | null;
+  occupancyUpstreamPercent: number | null;
+  /** From `Last Downstream Loop Data: …`. */
+  volumeDownstreamVph: number | null;
+  occupancyDownstreamPercent: number | null;
 }
 
 export interface LaneDirectionSummary {
   /** Direction of travel this summary describes. */
   directionId: 'toward_downtown' | 'toward_north_shore';
-  /** Primary VDS id used for this summary (e.g. 101 / 201). */
+  /**
+   * Which VDS block supplied `lanes` (measurement location). Lane indices are local to
+   * this station only — “Lane 1” here is not the same road position as “Lane 1” at VDS 103.
+   */
   vdsId: string;
   lanes: LaneState[];
   openLaneCount: number;
@@ -32,10 +45,18 @@ export interface LaneDirectionSummary {
   degradedLaneCount: number;
 }
 
+/** Whether the sign-reported delay got better or worse vs the prior DMS cycle. */
+export type DelayTrend = 'up' | 'down' | 'flat' | 'unknown';
+
 export interface BridgeDelay {
   delayMinutes: number | null;
   /** Raw DMS message text (current requested message body). */
   messageRaw: string;
+  /** Parsed from "Previous Requested Message" when present (often ~5 min earlier). */
+  previousDelayMinutes?: number | null;
+  previousMessageRaw?: string;
+  /** Current vs previous numeric delay (bridge-wide; not directional). */
+  delayTrend?: DelayTrend;
 }
 
 export interface RefreshMetadata {
@@ -66,6 +87,12 @@ export interface BridgeSnapshot {
   bridgeMode: BridgeMode;
   towardDowntown: LaneDirectionSummary;
   towardNorthShore: LaneDirectionSummary;
+  /**
+   * Merge / approach south of Marine (ATIS-03), wider cross-section than the bridge deck.
+   * Null when that VDS block is missing from the page. Omitted in older cached snapshots.
+   */
+  approachTowardDowntown?: LaneDirectionSummary | null;
+  approachTowardNorthShore?: LaneDirectionSummary | null;
   refresh: RefreshMetadata;
   parseWarnings: ParseWarning[];
 }

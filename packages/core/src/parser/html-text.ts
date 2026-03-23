@@ -7,12 +7,24 @@ export function stripHtmlToText(html: string): string {
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(p|div|tr|td|th|li|h[1-6])>/gi, '\n')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/gi, ' ')
+    .replace(/&nbsp;?/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
     .replace(/\r\n/g, '\n')
     .replace(/[ \t\f\v]+/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/** Light cleanup for DMS snippets that still contain entities or odd whitespace. */
+export function sanitizeAtisPlainText(raw: string): string {
+  return raw
+    .replace(/&nbsp;?/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/\r?\n/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
