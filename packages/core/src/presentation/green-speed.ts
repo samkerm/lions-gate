@@ -1,3 +1,5 @@
+import type { LaneState } from '../models';
+
 /**
  * Map “Last Averaged Lane Data” speed to a green fill: slower → lighter, faster → slightly
  * darker, with a capped maximum darkness so it stays pleasant on dark UI.
@@ -11,6 +13,13 @@ const FAST_RGB: readonly [number, number, number] = [34, 197, 94];
 
 /** Bridge lanes rarely exceed this; speeds above are clamped for the gradient. */
 const MAX_SPEED_KMH = 90;
+
+/**
+ * When either loop reports occupancy above this (max of upstream/downstream %), we treat the
+ * lane as “traffic-ish” and tint from averaged speed. At or below → free-flow default green.
+ * (Typical engineering band is ~5–9%; start at 6 and tune from field feedback.)
+ */
+export const OCCUPANCY_FREE_FLOW_MAX_PERCENT = 6;
 
 function clamp01(t: number): number {
   return Math.min(1, Math.max(0, t));
@@ -31,4 +40,40 @@ export function greenHexForAveragedSpeed(speedKmh: number | null): string {
   const g = lerpChannel(SLOW_RGB[1], FAST_RGB[1], t);
   const b = lerpChannel(SLOW_RGB[2], FAST_RGB[2], t);
   return `#${[r, g, b].map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
+function maxLoopOccupancyPercent(lane: LaneState): number | null {
+  const u = lane.occupancyUpstreamPercent;
+  const d = lane.occupancyDownstreamPercent;
+  if (u === null && d === null) {
+    return null;
+  }
+  return Math.max(u ?? 0, d ?? 0);
+}
+
+/**
+ * Low occupancy (0%, 1–2%, … up to {@link OCCUPANCY_FREE_FLOW_MAX_PERCENT}) means the lane is
+ * effectively free — use default green. Above that, speed drives the slow→pale traffic tint.
+ * If both loops are missing, we only have speed (no occupancy signal).
+ */
+function isFreeFlowByOccupancy(lane: LaneState): boolean {
+  const maxOcc = maxLoopOccupancyPercent(lane);
+  if (maxOcc === null) {
+    return false;
+  }
+  return maxOcc <= OCCUPANCY_FREE_FLOW_MAX_PERCENT;
+}
+
+/**
+ * Same gradient as {@link greenHexForAveragedSpeed}, with occupancy gating: low loop % → default
+ * green; higher % → tint from averaged speed (incl. empty-bridge 0 km/h + 0% as free).
+ */
+export function greenHexForLaneSpeedTint(lane: LaneState | null): string {
+  if (!lane) {
+    return DEFAULT_GREEN_HEX;
+  }
+  if (isFreeFlowByOccupancy(lane)) {
+    return DEFAULT_GREEN_HEX;
+  }
+  return greenHexForAveragedSpeed(lane.speedKmh);
 }

@@ -7,7 +7,8 @@ import type {
 } from '../models';
 import { delayBannerStyle } from '../parser/delay-trend';
 import { approachQueueHint } from './approach-queue-hint';
-import { greenHexForAveragedSpeed } from './green-speed';
+import { effectiveDelayMinutesForPerspective } from './delay-direction';
+import { greenHexForLaneSpeedTint } from './green-speed';
 import { formatLaneSpeed } from './lane-metrics-format';
 
 export type ThreeLaneSlotColor = 'red' | 'green' | 'neutral';
@@ -151,9 +152,8 @@ export function buildThreeLanePresentation(
   const dir = travelDirectionLabelForPerspective(perspective);
   const middleLaneLabel = lane ? `${dir} L${lane.laneNumber}` : `${dir} —`;
   /** Middle slot = reversible lane (L1); right = default lane (L2) — two speeds → two greens. */
-  const middleGreenHex =
-    middleColor === 'green' ? greenHexForAveragedSpeed(lane1?.speedKmh ?? null) : null;
-  const rightGreenHex = greenHexForAveragedSpeed(lane2?.speedKmh ?? null);
+  const middleGreenHex = middleColor === 'green' ? greenHexForLaneSpeedTint(lane1) : null;
+  const rightGreenHex = greenHexForLaneSpeedTint(lane2);
   return {
     perspectiveLabel: describePerspective(perspective),
     travelDirectionLabel: travelDirectionLabelForPerspective(perspective),
@@ -171,8 +171,9 @@ export function buildThreeLanePayload(
   perspective: BridgePerspective,
 ): WidgetBridgePayloadV1 {
   const three = buildThreeLanePresentation(snapshot, perspective);
-  const dm = snapshot.delay?.delayMinutes ?? null;
-  const prev = snapshot.delay?.previousDelayMinutes ?? null;
+  const dm = effectiveDelayMinutesForPerspective(snapshot, perspective);
+  const prev =
+    dm != null ? (snapshot.delay?.previousDelayMinutes ?? null) : null;
   const summary = travelSummaryForPerspective(snapshot, perspective);
   const l1 = summary?.lanes.find((l) => l.laneNumber === 1) ?? null;
   const l2 = summary?.lanes.find((l) => l.laneNumber === 2) ?? null;
@@ -199,7 +200,7 @@ export function buildThreeLanePayload(
     rightSpeedLine,
     delayMinutes: dm,
     delayBanner: delayBannerStyle(dm),
-    delayTrend: snapshot.delay?.delayTrend ?? 'unknown',
+    delayTrend: dm != null ? snapshot.delay?.delayTrend ?? 'unknown' : 'unknown',
     previousDelayMinutes: prev,
     bridgeQueueHint: bridgeQueueHintField,
   };

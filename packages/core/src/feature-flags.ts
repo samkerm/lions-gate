@@ -14,6 +14,11 @@ export interface FeatureFlags {
    * Used to compare approach vs bridge speeds when DMS shows no delay.
    */
   approachMergeVdsIds?: readonly [string, string];
+  /**
+   * [SB, NB] at south end of causeway (ATIS-01) — park / downtown approach before the bridge.
+   * Used with {@link approachMergeVdsIds} and primary deck VDS for directional delay inference.
+   */
+  foreshoreCausewayVdsIds?: readonly [string, string];
   /** Treat data as stale if older than this many ms (client clock). */
   staleAfterMs: number;
 }
@@ -21,5 +26,6 @@ export interface FeatureFlags {
 export const defaultFeatureFlags: FeatureFlags = {
   primarySouthCausewayVdsIds: ['102', '202'],
   approachMergeVdsIds: ['103', '203'],
+  foreshoreCausewayVdsIds: ['101', '201'],
   staleAfterMs: 10 * 60 * 1000,
 };

@@ -93,6 +93,12 @@ export interface BridgeSnapshot {
    */
   approachTowardDowntown?: LaneDirectionSummary | null;
   approachTowardNorthShore?: LaneDirectionSummary | null;
+  /**
+   * South end of causeway / Stanley Park approach (ATIS-01, VDS 101/201). Used with 103 vs 102
+   * to infer whether DMS delay is mostly merge-side vs downtown-side. Omitted when missing.
+   */
+  foreshoreTowardDowntown?: LaneDirectionSummary | null;
+  foreshoreTowardNorthShore?: LaneDirectionSummary | null;
   refresh: RefreshMetadata;
   parseWarnings: ParseWarning[];
 }

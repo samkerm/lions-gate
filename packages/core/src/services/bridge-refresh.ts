@@ -26,6 +26,8 @@ function emptySnapshot(now: Date, sourceUrl: string): BridgeSnapshot {
     towardNorthShore: buildDirectionSummary('toward_north_shore', '202', []),
     approachTowardDowntown: null,
     approachTowardNorthShore: null,
+    foreshoreTowardDowntown: null,
+    foreshoreTowardNorthShore: null,
     parseWarnings: [{ code: 'no_data', message: 'No cached or remote data available.' }],
     refresh: {
       fetchedAt: now.toISOString(),

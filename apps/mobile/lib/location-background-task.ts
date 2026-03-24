@@ -69,11 +69,12 @@ export async function startBridgeBackgroundLocation(): Promise<void> {
   }
   const opts: Location.LocationTaskOptions = {
     accuracy: Location.Accuracy.Balanced,
-    distanceInterval: 200,
-    timeInterval: 120_000,
+    /** Smaller radius so perspective flips sooner after crossing the bridge midpoint. */
+    distanceInterval: 75,
+    timeInterval: 45_000,
     pausesUpdatesAutomatically: true,
     showsBackgroundLocationIndicator: true,
-    activityType: Location.LocationActivityType.AutomotiveNavigation,
+    activityType: Location.ActivityType.AutomotiveNavigation,
   };
   if (Platform.OS === 'android') {
     opts.foregroundService = {

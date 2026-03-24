@@ -111,6 +111,22 @@ export function parseAtisHtml(
     ? buildDirectionSummary('toward_north_shore', nbApproachId, nbApproachLanes)
     : null;
 
+  const foreshorePair =
+    flags.foreshoreCausewayVdsIds ??
+    defaultFeatureFlags.foreshoreCausewayVdsIds ??
+    (['101', '201'] as const);
+  const [sbForeshoreId, nbForeshoreId] = foreshorePair;
+  const sbForeshoreSec = findSectionById(sections, sbForeshoreId);
+  const nbForeshoreSec = findSectionById(sections, nbForeshoreId);
+  const sbForeshoreLanes = sbForeshoreSec ? parseLanesInVdsSection(sbForeshoreSec.raw) : [];
+  const nbForeshoreLanes = nbForeshoreSec ? parseLanesInVdsSection(nbForeshoreSec.raw) : [];
+  const foreshoreTowardDowntown = sbForeshoreSec
+    ? buildDirectionSummary('toward_downtown', sbForeshoreId, sbForeshoreLanes)
+    : null;
+  const foreshoreTowardNorthShore = nbForeshoreSec
+    ? buildDirectionSummary('toward_north_shore', nbForeshoreId, nbForeshoreLanes)
+    : null;
+
   const stale = isSnapshotStaleByAge(lastUpdateRaw, options.fetchedAt, flags.staleAfterMs);
 
   const snapshot: BridgeSnapshot = {
@@ -121,6 +137,8 @@ export function parseAtisHtml(
     towardNorthShore,
     approachTowardDowntown,
     approachTowardNorthShore,
+    foreshoreTowardDowntown,
+    foreshoreTowardNorthShore,
     parseWarnings: [...warnings],
     refresh: {
       fetchedAt: options.fetchedAt.toISOString(),

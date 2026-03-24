@@ -28,3 +28,16 @@ export function sanitizeAtisPlainText(raw: string): string {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+/**
+ * Removes phase boilerplate and duplicate delay headline from DMS plain text for in-app display.
+ * Timestamps and “Current Requested Message at …” are kept.
+ */
+export function stripDmsBoilerplateForUi(s: string): string {
+  let t = s.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+  t = t.replace(/\(\s*\d+\s+phase\s+message\s*\)/gi, ' ');
+  t = t.replace(/Message\s+Phase\s+\d+\s*:/gi, ' ');
+  t = t.replace(/\(\s*This\s+Phase\s+(?:is\s+)?(?:in\s+)?Automatic\s+Control\s+Mode\s*\)/gi, ' ');
+  t = t.replace(/\bLIONS\s+GATE\s+DELAYS\s+\d+\s*MIN\b/gi, ' ');
+  return t.replace(/\s{2,}/g, ' ').trim();
+}

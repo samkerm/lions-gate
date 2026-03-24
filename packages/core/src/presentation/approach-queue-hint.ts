@@ -1,4 +1,5 @@
 import type { BridgePerspective, BridgeSnapshot, LaneDirectionSummary, LaneState } from '../models';
+import { bridgeDeckMeanSpeedKmh } from './lane-speed-metrics';
 
 /** Minimum km/h gap (approach slower than bridge) before we hint at a forming queue. */
 const GAP_KMH = 15;
@@ -14,14 +15,6 @@ function meanValidSpeedKmh(lanes: LaneState[]): number | null {
     return null;
   }
   return speeds.reduce((a, b) => a + b, 0) / speeds.length;
-}
-
-/** Bridge deck L1 + L2 only (same geometry as the three-lane UI). */
-function bridgeDeckMeanSpeed(summary: LaneDirectionSummary): number | null {
-  const l1 = summary.lanes.find((l) => l.laneNumber === 1);
-  const l2 = summary.lanes.find((l) => l.laneNumber === 2);
-  const lanes = [l1, l2].filter((x): x is LaneState => x != null);
-  return meanValidSpeedKmh(lanes);
 }
 
 export type ApproachQueueHint =
@@ -71,7 +64,7 @@ export function approachQueueHint(
   }
 
   const approachMean = meanValidSpeedKmh(approach.lanes);
-  const bridgeMean = bridgeDeckMeanSpeed(bridge);
+  const bridgeMean = bridgeDeckMeanSpeedKmh(bridge);
 
   if (bridgeMean == null || approachMean == null) {
     return { kind: 'none' };

@@ -6,6 +6,7 @@ import {
   buildThreeLanePresentation,
   defaultFeatureFlags,
   delayBannerStyle,
+  effectiveDelayMinutesForPerspective,
   formatAtisLastUpdateForDisplay,
   formatLaneOccupancy,
   formatLaneSpeed,
@@ -14,7 +15,6 @@ import {
   noopCrashlytics,
   perspectiveFromCoordinates,
   refreshBridgeSnapshot,
-  sanitizeAtisPlainText,
   travelSummaryForPerspective,
 } from '@lions-gate/core';
 import { Button, Spinner, Text, XStack, YStack } from '@lions-gate/ui';
@@ -55,6 +55,13 @@ function locationPermissionAlertBody(): string {
     '',
     'Open Settings → Apps → Lions Gate Bridge → Permissions → Location, then select “Allow all the time”. “Allow only while using the app” limits updates to when the app is open.',
   ].join('\n');
+}
+
+function backgroundLocationHintBody(): string {
+  if (Platform.OS === 'ios') {
+    return 'Choose “Always” so we keep receiving your location in the background—not only for the widget, but so your side of the bridge stays current when you’re not in the app.';
+  }
+  return 'Choose “Allow all the time” so we keep receiving your location in the background—not only for the widget, but so your side of the bridge stays current when you’re not in the app.';
 }
 
 async function fetchHtml(): Promise<string> {
@@ -110,9 +117,7 @@ function ThreeLaneStrip({
 }: {
   middle: { color: 'red' | 'green' | 'neutral'; greenHex?: string | null };
   rightGreenHex?: string | null;
-  /** Middle icon = L1 (reversible lane): speed line, then occupancy %. */
   lane1UnderIcon?: { speedLine: string; percentLine: string } | null;
-  /** Right icon = L2 (default lane). */
   lane2UnderIcon?: { speedLine: string; percentLine: string } | null;
 }) {
   const leftBg = '#b42318';
@@ -334,6 +339,35 @@ export default function BridgeScreen() {
     }, [runRefresh]),
   );
 
+  /** Foreground: frequent GPS updates so perspective flips soon after crossing the bridge. */
+  useFocusEffect(
+    useCallback(() => {
+      if (locationPermission !== Location.PermissionStatus.GRANTED) {
+        return undefined;
+      }
+      let subscription: Location.LocationSubscription | undefined;
+      const ready = Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.Balanced,
+          distanceInterval: 40,
+          timeInterval: 4000,
+        },
+        (loc) => {
+          const geo = perspectiveFromCoordinates(loc.coords.latitude, loc.coords.longitude);
+          setGeoPerspective(geo);
+          geoRef.current = geo;
+        },
+      ).then((sub) => {
+        subscription = sub;
+      });
+      return () => {
+        void ready.then(() => {
+          subscription?.remove();
+        });
+      };
+    }, [locationPermission]),
+  );
+
   const effectivePerspective: BridgePerspective = useMemo(() => {
     if (locationPermission === Location.PermissionStatus.DENIED && manualPerspective) {
       return manualPerspective;
@@ -419,15 +453,19 @@ export default function BridgeScreen() {
     pushWidgetPayload(snapshot, effectivePerspective);
   }, [snapshot, effectivePerspective]);
 
-  const delayDisplay = snapshot?.delay?.messageRaw
-    ? sanitizeAtisPlainText(snapshot.delay.messageRaw)
-    : null;
+  const effectiveDelayMinutes = useMemo(() => {
+    if (!snapshot) {
+      return null;
+    }
+    return effectiveDelayMinutesForPerspective(snapshot, effectivePerspective);
+  }, [snapshot, effectivePerspective]);
 
   const delayBanner =
-    snapshot?.delay?.delayMinutes != null && snapshot.delay.delayMinutes > 0
-      ? delayBannerStyle(snapshot.delay.delayMinutes)
+    effectiveDelayMinutes != null && effectiveDelayMinutes > 0
+      ? delayBannerStyle(effectiveDelayMinutes)
       : 'none';
-  const delayTrend = snapshot?.delay?.delayTrend;
+  const delayTrend =
+    effectiveDelayMinutes != null ? snapshot?.delay?.delayTrend : undefined;
 
   const approachHint = useMemo(() => {
     if (!snapshot || effectivePerspective === 'unknown') {
@@ -443,11 +481,8 @@ export default function BridgeScreen() {
           <Text fontSize="$8" fontWeight="700" color="#fafafa">
             Lions Gate Bridge
           </Text>
-          <Text opacity={0.75} color="#d4d4d8">
-            ATIS status (client-side parse)
-          </Text>
 
-          {snapshot?.delay?.delayMinutes != null && snapshot.delay.delayMinutes > 0 ? (
+          {effectiveDelayMinutes != null && effectiveDelayMinutes > 0 ? (
             <YStack
               padding="$3"
               borderRadius="$4"
@@ -457,23 +492,23 @@ export default function BridgeScreen() {
               gap="$1"
             >
               <Text fontSize="$1" color="#a1a1aa" textTransform="uppercase">
-                Bridge delay (DMS · all directions)
+                Bridge delay (DMS · your commute)
               </Text>
               <Text
                 fontSize="$10"
                 fontWeight="900"
                 color={delayBanner === 'red' ? '#f87171' : '#facc15'}
               >
-                {snapshot.delay.delayMinutes} MIN
+                {effectiveDelayMinutes} MIN
               </Text>
-              {delayTrend === 'down' && snapshot.delay.previousDelayMinutes != null ? (
+              {delayTrend === 'down' && snapshot?.delay?.previousDelayMinutes != null ? (
                 <Text fontSize="$2" color="#86efac">
                   ↓ from {snapshot.delay.previousDelayMinutes} min (improving)
                 </Text>
               ) : null}
               {delayTrend === 'up' ? (
                 <Text fontSize="$2" color="#d4d4d8">
-                  {snapshot.delay.previousDelayMinutes != null
+                  {snapshot?.delay?.previousDelayMinutes != null
                     ? `Possible delay building up · ↑ from ${snapshot.delay.previousDelayMinutes} min`
                     : 'Possible delay building up'}
                 </Text>
@@ -520,13 +555,6 @@ export default function BridgeScreen() {
                 Open the app with location (or pick a side below) to see lanes.
               </Text>
             )}
-            {threeLane ? (
-              <Text fontSize="$2" opacity={0.85} color="#d4d4d8">
-                Middle = lane 1 (reversible), right = lane 2 (default); numbers are for your
-                direction of travel. Icon color still uses the worse of L1 vs L2 (
-                {threeLane.middleLaneLabel}).
-              </Text>
-            ) : null}
           </YStack>
 
           <YStack gap="$2">
@@ -558,9 +586,7 @@ export default function BridgeScreen() {
                 {backgroundLocationPermission != null &&
                 backgroundLocationPermission !== Location.PermissionStatus.GRANTED ? (
                   <Text color="#a1a1aa" fontSize="$2">
-                    Choose “Always” (iOS) or “Allow all the time” (Android) so we keep getting your
-                    location in the background—not only for the widget, but so your side of the
-                    bridge stays current when you’re not in the app.
+                    {backgroundLocationHintBody()}
                   </Text>
                 ) : null}
                 {backgroundLocationPermission != null &&
@@ -644,15 +670,10 @@ export default function BridgeScreen() {
               Delay
             </Text>
             <Text color="#d4d4d8">
-              {snapshot?.delay?.delayMinutes != null
-                ? `${snapshot.delay.delayMinutes} min`
+              {effectiveDelayMinutes != null
+                ? `${effectiveDelayMinutes} min`
                 : 'No numeric delay detected'}
             </Text>
-            {delayDisplay ? (
-              <Text opacity={0.9} color="#e4e4e7" numberOfLines={6}>
-                {delayDisplay}
-              </Text>
-            ) : null}
           </YStack>
 
           <YStack gap="$2">
@@ -663,30 +684,12 @@ export default function BridgeScreen() {
               Last update (source):{' '}
               {formatAtisLastUpdateForDisplay(snapshot?.refresh.lastUpdated ?? null)}
             </Text>
-            <Text color="#a1a1aa" fontSize="$2">
+            <Text color="#d4d4d8">
               Fetched at:{' '}
               {snapshot?.refresh.fetchedAt
                 ? formatVancouverFromIso(snapshot.refresh.fetchedAt)
                 : '—'}
             </Text>
-            <Text color="#a1a1aa" fontSize="$2">
-              While this screen is open, data refetches about every{' '}
-              {Math.round(ATIS_POLL_INTERVAL_MS / 60000)} min (same fetch updates the home screen
-              widget when the app runs).
-            </Text>
-            <Text color={snapshot?.refresh.isStale ? '#f87171' : '#4ade80'}>
-              {snapshot?.refresh.isStale
-                ? `Stale: ${snapshot.refresh.staleReason ?? 'yes'}`
-                : 'Fresh'}
-            </Text>
-            <Text color="#a1a1aa">Bridge mode: {snapshot?.bridgeMode ?? '—'}</Text>
-            {snapshot ? (
-              <Text color="#a1a1aa" fontSize="$2">
-                Lane health uses VDS {snapshot.towardDowntown.vdsId} (SB) and{' '}
-                {snapshot.towardNorthShore.vdsId} (NB) at the north end of the causeway (ATIS-02).
-                L1 = reversible middle, L2 = default. Other VDS blocks use their own lane numbering.
-              </Text>
-            ) : null}
           </YStack>
 
           <XStack gap="$2" alignItems="center">
